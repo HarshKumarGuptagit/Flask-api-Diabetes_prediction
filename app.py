@@ -11,7 +11,7 @@ app=Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<h1>Hello World!</h1>"
+    return "<html><body><h1>Hello World!</h1></body></html>"
 
 @app.route('/predict',methods=['POST']) # without url inpit
 def predict():
