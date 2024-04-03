@@ -13,7 +13,7 @@ app=Flask(__name__)
 def home():
     return "<html><body><h1>Hello World!</h1></body></html>"
 
-@app.route('/predict',methods=['POST']) # without url inpit
+@app.route('/predict',methods=['POST','GET']) # without url inpit
 def predict():
     Pregnancies = int(request.form.get('Pregnancies'))
     Glucose = int(request.form.get('Glucose'))
