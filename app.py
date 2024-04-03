@@ -1,19 +1,20 @@
-from flask import Flask,request,jsonify
+from flask import Flask, request, jsonify
 import pickle
 import numpy as np
 import warnings
+
 warnings.filterwarnings('ignore')
 
-model = pickle.load(open('model.pkl','rb'))
-scaler= pickle.load(open('scaler.pkl','rb'))
+model = pickle.load(open('model.pkl', 'rb'))
+scaler = pickle.load(open('scaler.pkl', 'rb'))
 
-app=Flask(__name__)
+app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<html><body><h1>Hello World!</h1></body></html>"
+    return "<h1>Hello World!</h1>"
 
-@app.route('/predict',methods=['POST','GET']) # without url inpit
+@app.route('/predict', methods=['POST'])
 def predict():
     Pregnancies = int(request.form.get('Pregnancies'))
     Glucose = int(request.form.get('Glucose'))
@@ -24,14 +25,16 @@ def predict():
     DiabetesPedigreeFunction = float(request.form.get('DiabetesPedigreeFunction'))
     Age = int(request.form.get('Age'))
 
-
-    input_query=np.array([[Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age]])
+    input_query = np.array([[Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age]])
     input_query_std = scaler.transform(input_query)
     
-    result= model.predict(input_query_std)[0]
+    result = model.predict(input_query_std)[0]
 
-    return jsonify({'Outcome':str(result)})
+    # Serialize response data into JSON format and set Content-Type header
+    response = jsonify({'Outcome': str(result)})
+    response.headers.add('Content-Type', 'application/json')
 
-if __name__=="__main__":
+    return response
+
+if __name__ == "__main__":
     app.run(debug=True)
-
